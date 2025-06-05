@@ -55,7 +55,8 @@
 
                                 <div class="card shadow-sm mt-4 mb-5">
                                     <div class="card-body">
-                                        <form:form method="post" action="/admin/product/update"
+                                        <form:form method="post"
+                                            action="${pageContext.request.contextPath}/admin/product/update/${newProduct.id}"
                                             modelAttribute="newProduct" enctype="multipart/form-data" class="row g-3">
 
                                             <!-- Trường ẩn để giữ ID -->

@@ -13,6 +13,7 @@
                 <meta name="author" content="Hỏi Dân IT" />
                 <title>Create User -</title>
                 <link href="/css/styles.css" rel="stylesheet" />
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
                 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
             </head>
 
@@ -22,44 +23,51 @@
                     <jsp:include page="../layout/sidebar.jsp" />
                     <div id="layoutSidenav_content">
                         <main>
-                            <div class="container-fluid px-4">
-                                <h1 class="mt-4">Manage Products</h1>
-                                <ol class="breadcrumb mb-4">
-                                    <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">Product</li>
-                                </ol>
+                            <div class="container-fluid px-4 my-4">
+                                <h1 class="mt-4 mb-3">Manage Products</h1>
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb mb-4">
+                                        <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">Product</li>
+                                    </ol>
+                                </nav>
 
-                                <body class="mt-5">
-                                    <div class="row">
-                                        <div class="col-12 mx-auto">
-                                            <div class="d-flex justify-content-between">
-                                                <h3>Table users with id = ${user.id}</h3>
-                                            </div>
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8 col-lg-6">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h3>User details for ID: <span class="text-primary">${user.id}</span></h3>
+                                        </div>
 
-                                            <hr />
-                                            <div class="card" style="width: 60%">
-                                                <div class="card-header">
-                                                    User information
-                                                </div>
-                                                <ul class="list-group list-group-flush">
-                                                    <li class="list-group-item">${user.id}</li>
-                                                    <li class="list-group-item">${user.email}</li>
-                                                    <li class="list-group-item">${user.fullName}</li>
-                                                    <li class="list-group-item">${user.address}</li>
-                                                </ul>
+                                        <div class="card shadow-sm">
+                                            <div class="card-header bg-primary text-white">
+                                                User Information
                                             </div>
+                                            <ul class="list-group list-group-flush">
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>ID:</strong> <span>${user.id}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>Email:</strong> <span>${user.email}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>Full Name:</strong> <span>${user.fullName}</span>
+                                                </li>
+                                                <li class="list-group-item d-flex justify-content-between">
+                                                    <strong>Address:</strong> <span>${user.address}</span>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
-                                </body>
+                                </div>
                             </div>
                         </main>
                         <jsp:include page="../layout/footer.jsp" />
                     </div>
                 </div>
+
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
                     crossorigin="anonymous"></script>
                 <script src="/js/scripts.js"></script>
-
             </body>
 
             </html>

@@ -35,6 +35,7 @@ public class ProductController {
         this.uploadService = uploadService;
     }
 
+    // --------------------- Danh sách sản phẩm ---------------------
     @GetMapping("/admin/product")
     public String getDashboard(Model model, @RequestParam("page") Optional<String> pageOptional) {
         int page = 1;
@@ -43,21 +44,18 @@ public class ProductController {
                 page = Integer.parseInt(pageOptional.get());
             }
         } catch (Exception e) {
-            // Có thể log lỗi nếu cần
+            // Log nếu cần
         }
-        Pageable pageable = PageRequest.of(page - 1, 2);
-
+        Pageable pageable = PageRequest.of(page - 1, 10);
         Page<Product> products = this.productService.getAllProducts(pageable);
         List<Product> listProducts = products.getContent();
         model.addAttribute("users1", listProducts);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", products.getTotalPages());
-        if (products.getTotalPages() == 0) {
-            model.addAttribute("totalPages", 1);
-        }
+        model.addAttribute("totalPages", products.getTotalPages() == 0 ? 1 : products.getTotalPages());
         return "admin/product/show";
     }
 
+    // --------------------- Tạo sản phẩm ---------------------
     @GetMapping("/admin/product/create")
     public String getCreateProduct(Model model) {
         model.addAttribute("newProduct", new Product());
@@ -71,40 +69,14 @@ public class ProductController {
         if (newUserBindingResult.hasErrors()) {
             return "admin/product/create";
         }
-
         String avatar = this.uploadService.handleSaveUploadFile(file, "product");
         newUser.setImage(avatar);
         this.productService.handleSaveProduct(newUser);
         return "redirect:/admin/product";
     }
 
-    @GetMapping("/admin/product/delete/{id}")
-    public String getDeleteUserPage(Model model, @PathVariable long id) {
-        Optional<Product> productOpt = productService.fetchProductById(id);
-        if (productOpt.isEmpty()) {
-            return "redirect:/admin/product?error=notfound";
-        }
-        model.addAttribute("productToDelete", productOpt.get());
-        return "admin/product/delete";
-    }
-
-    @PostMapping("/admin/product/delete")
-    public String postDeleteUserPage(@ModelAttribute("productToDelete") Product productToDelete) {
-        productService.deleteAProduct(productToDelete.getId());
-        return "redirect:/admin/product";
-    }
-
-    @RequestMapping("/admin/product/{id}")
-    public String getUserDetailpage(Model model, @PathVariable long id) {
-        Optional<Product> userOpt = this.productService.fetchProductById(id);
-        if (userOpt.isEmpty()) {
-            // Nếu không tìm thấy, chuyển về trang danh sách với thông báo lỗi
-            return "redirect:/admin/product?error=notfound";
-        }
-        model.addAttribute("user", userOpt.get());
-        return "admin/product/detail";
-    }
-
+    // --------------------- Cập nhật sản phẩm (Đặt trước phần /{id})
+    // ---------------------
     @RequestMapping("/admin/product/update/{id}")
     public String getUpdateUserpage(Model model, @PathVariable long id) {
         Optional<Product> userOpt = this.productService.fetchProductById(id);
@@ -118,7 +90,8 @@ public class ProductController {
     @PostMapping("/admin/product/update/{id}")
     public String postUpdateProductpage(Model model, @ModelAttribute("newProduct") Product newUser,
             BindingResult newProductBindingResult,
-            @RequestParam("imageFile") MultipartFile file, @PathVariable long id) {
+            @RequestParam("imageFile") MultipartFile file,
+            @PathVariable long id) {
 
         if (newProductBindingResult.hasErrors()) {
             return "admin/product/update";
@@ -127,7 +100,6 @@ public class ProductController {
         Optional<Product> userOpt = this.productService.fetchProductById(newUser.getId());
         if (userOpt.isEmpty()) {
             return "redirect:/admin/product?error=notfound";
-
         }
 
         Product user = userOpt.get();
@@ -148,8 +120,36 @@ public class ProductController {
         user.setWeight(newUser.getWeight());
         user.setFactory(newUser.getFactory());
         user.setTarget(newUser.getTarget());
-        this.productService.handleSaveProduct(user);
 
+        this.productService.handleSaveProduct(user);
         return "redirect:/admin/product";
+    }
+
+    // --------------------- Xoá sản phẩm ---------------------
+    @GetMapping("/admin/product/delete/{id}")
+    public String getDeleteUserPage(Model model, @PathVariable long id) {
+        Optional<Product> productOpt = productService.fetchProductById(id);
+        if (productOpt.isEmpty()) {
+            return "redirect:/admin/product?error=notfound";
+        }
+        model.addAttribute("productToDelete", productOpt.get());
+        return "admin/product/delete";
+    }
+
+    @PostMapping("/admin/product/delete")
+    public String postDeleteUserPage(@ModelAttribute("productToDelete") Product productToDelete) {
+        productService.deleteAProduct(productToDelete.getId());
+        return "redirect:/admin/product";
+    }
+
+    // --------------------- Chi tiết sản phẩm ---------------------
+    @RequestMapping("/admin/product/{id:\\\\d+}")
+    public String getUserDetailpage(Model model, @PathVariable long id) {
+        Optional<Product> userOpt = this.productService.fetchProductById(id);
+        if (userOpt.isEmpty()) {
+            return "redirect:/admin/product?error=notfound";
+        }
+        model.addAttribute("user", userOpt.get());
+        return "admin/product/detail";
     }
 }
